@@ -28,6 +28,14 @@ class RectDrawer {
     this.size.classList.add('size-box');
     document.body.appendChild(this.size);
   }
+  resetState() {
+    // reset flags and references to their default states
+    this.resizingRect = null;
+    this.resizeEdge = null;
+    this.isDrawing = false;
+    this.isResizing = false;
+    this.isMoving = false;
+  }
   isNearBorder(x, y, rect) {
     // check if the cursor is near the border or corner of a rectangle
     return (
