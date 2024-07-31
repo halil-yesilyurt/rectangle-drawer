@@ -98,6 +98,13 @@ class RectDrawer {
         return '';
     }
   }
+  setMinSizeStyle(rect, width, height, left, top) {
+    // set the minimum size style for the resizing rectangle
+    this.resizingRect.style.width = `${Math.max(width, this.MIN_SIZE)}px`;
+    this.resizingRect.style.height = `${Math.max(height, this.MIN_SIZE)}px`;
+    this.resizingRect.style.left = `${Math.min(left, rect.right - this.MIN_SIZE)}px`;
+    this.resizingRect.style.top = `${Math.min(top, rect.bottom - this.MIN_SIZE)}px`;
+  }
   mouseDown(e) {
     this.startX = e.clientX + window.scrollX;
     this.startY = e.clientY + window.scrollY;
