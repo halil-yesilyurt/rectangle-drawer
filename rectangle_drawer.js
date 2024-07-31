@@ -22,5 +22,10 @@ class RectDrawer {
     document.addEventListener('mousemove', this.mouseMove.bind(this));
     document.addEventListener('mouseup', this.mouseUp.bind(this));
     document.addEventListener('mousemove', this.updateCursor.bind(this));
+
+    // initialize the size box for showing rectangle dimensions
+    this.size = document.createElement('span');
+    this.size.classList.add('size-box');
+    document.body.appendChild(this.size);
   }
 }
