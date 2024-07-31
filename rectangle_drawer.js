@@ -34,6 +34,21 @@ class RectDrawer {
       x >= rect.left - this.MIN_SIZE && x <= rect.right + this.MIN_SIZE && y >= rect.top - this.MIN_SIZE && y <= rect.bottom + this.MIN_SIZE
     );
   }
+  getResizeEdge(x, y, rect) {
+    // determine which edge or corner of a rectangle the cursor is near
+    const isNear = (a, b) => Math.abs(a - b) < this.resizeMargin;
+
+    // check each edge and corner to see which one is closest to the cursor
+    if (isNear(x, rect.left) && isNear(y, rect.top)) return 'top-left';
+    if (isNear(x, rect.right) && isNear(y, rect.top)) return 'top-right';
+    if (isNear(x, rect.left) && isNear(y, rect.bottom)) return 'bottom-left';
+    if (isNear(x, rect.right) && isNear(y, rect.bottom)) return 'bottom-right';
+    if (isNear(x, rect.left)) return 'left';
+    if (isNear(x, rect.right)) return 'right';
+    if (isNear(y, rect.top)) return 'top';
+    if (isNear(y, rect.bottom)) return 'bottom';
+    return null;
+  }
   mouseDown(e) {
     this.startX = e.clientX + window.scrollX;
     this.startY = e.clientY + window.scrollY;
