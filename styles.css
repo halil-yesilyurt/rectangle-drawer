@@ -26,3 +26,24 @@ body {
 .size-box.active {
   display: block;
 }
+.resize-nw {
+  cursor: nw-resize;
+}
+.resize-ne {
+  cursor: ne-resize;
+}
+.resize-sw {
+  cursor: sw-resize;
+}
+.resize-se {
+  cursor: se-resize;
+}
+.resize-ns {
+  cursor: ns-resize;
+}
+.resize-ew {
+  cursor: ew-resize;
+}
+.move {
+  cursor: move;
+}
