@@ -96,4 +96,35 @@ class RectDrawer {
       this.isDrawing = true;
     }
   }
+  hidePreviousSizeBox() {
+    // hide the previous size box if it exists
+    if (this.size) {
+      this.size.classList.remove('active');
+    }
+  }
+  updateSizeBoxPosition(rect) {
+    // update the position of the size box relative to the rectangle
+    const rectPos = rect.getBoundingClientRect();
+    let sizePosLeft = rectPos.left;
+    let sizePosTop = rectPos.top - 28;
+
+    // adjust for scroll offsets
+    const scrollLeft = window.scrollX;
+    const scrollTop = window.scrollY;
+    sizePosLeft += scrollLeft;
+    sizePosTop += scrollTop;
+
+    // ensure the size box remains within the viewport
+    if (sizePosLeft + this.size.offsetWidth > window.innerWidth) {
+      sizePosLeft = window.innerWidth - this.size.offsetWidth - 5 + scrollLeft;
+    }
+    if (sizePosTop < 0) {
+      sizePosTop = 5 + scrollTop;
+    }
+
+    // set the size box position
+    this.size.style.left = `${sizePosLeft}px`;
+    this.size.style.top = `${sizePosTop}px`;
+    this.size.classList.add('active');
+  }
 }
