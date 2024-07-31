@@ -1,3 +1,5 @@
+*Educational Networks Developer Job Test Case*
+
 The Rectangle Drawer is a JavaScript application that allows users to draw, resize, and interact with rectangles on a webpage. Developed in pure JavaScript without any third-party libraries or frameworks, this project demonstrates object-oriented programming principles and DOM manipulation techniques.
 
 ## Features
