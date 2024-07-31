@@ -28,6 +28,12 @@ class RectDrawer {
     this.size.classList.add('size-box');
     document.body.appendChild(this.size);
   }
+  isNearBorder(x, y, rect) {
+    // check if the cursor is near the border or corner of a rectangle
+    return (
+      x >= rect.left - this.MIN_SIZE && x <= rect.right + this.MIN_SIZE && y >= rect.top - this.MIN_SIZE && y <= rect.bottom + this.MIN_SIZE
+    );
+  }
   mouseDown(e) {
     this.startX = e.clientX + window.scrollX;
     this.startY = e.clientY + window.scrollY;
