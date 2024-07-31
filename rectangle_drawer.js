@@ -277,6 +277,22 @@ class RectDrawer {
       this.resizingRect.style.top = `${newTop}px`;
     }
   }
+  mouseUp(e) {
+    if (this.isDrawing) {
+      // if the rectangle is too small, remove it
+      if (parseInt(this.currentRect.style.width) < this.MIN_SIZE || parseInt(this.currentRect.style.height) < this.MIN_SIZE) {
+        document.body.removeChild(this.currentRect);
+        this.rectangles.pop();
+      }
+    }
+
+    // remove the size box if it exists
+    if (this.size) {
+      this.size.classList.remove('active');
+    }
+
+    this.resetState();
+  }
   hidePreviousSizeBox() {
     // hide the previous size box if it exists
     if (this.size) {
