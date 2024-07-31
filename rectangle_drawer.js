@@ -49,6 +49,55 @@ class RectDrawer {
     if (isNear(y, rect.bottom)) return 'bottom';
     return null;
   }
+  updateCursor(e) {
+    // update cursor style based on the current mouse position
+    let cursorClass = '';
+    let isCursorUpdated = false;
+
+    // iterate through all child nodes in the document body
+    for (let i = 0; i < document.body.childNodes.length; i++) {
+      const node = document.body.childNodes[i];
+
+      // check if the node is a DIV element with absolute positioning
+      if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'DIV' && window.getComputedStyle(node).position === 'absolute') {
+        const rect = node.getBoundingClientRect();
+        if (this.isNearBorder(e.clientX, e.clientY, rect)) {
+          // check if the cursor is near the rectangle
+          const edge = this.getResizeEdge(e.clientX, e.clientY, rect); // Determine the resize edge
+          if (edge) {
+            // set cursor style based on edge
+            cursorClass = this.isMoving ? 'move' : this.getCursorClass(edge);
+            isCursorUpdated = true;
+            break;
+          }
+        }
+      }
+    }
+
+    // apply the cursor style to the document body if needed
+    document.body.className = isCursorUpdated ? cursorClass : '';
+  }
+  getCursorClass(edge) {
+    // return the CSS class name for the cursor based on the edge being resized
+    switch (edge) {
+      case 'top-left':
+        return 'resize-nw';
+      case 'top-right':
+        return 'resize-ne';
+      case 'bottom-left':
+        return 'resize-sw';
+      case 'bottom-right':
+        return 'resize-se';
+      case 'left':
+      case 'right':
+        return 'resize-ew';
+      case 'top':
+      case 'bottom':
+        return 'resize-ns';
+      default:
+        return '';
+    }
+  }
   mouseDown(e) {
     this.startX = e.clientX + window.scrollX;
     this.startY = e.clientY + window.scrollY;
