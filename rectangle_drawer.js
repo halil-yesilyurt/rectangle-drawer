@@ -96,6 +96,110 @@ class RectDrawer {
       this.isDrawing = true;
     }
   }
+  // handle mouse move events for drawing, resizing, or moving rectangles
+  mouseMove(e) {
+    if (this.isDrawing) {
+      // calculate the width and height of the rectangle while drawing
+      let rectWidth = e.clientX + window.scrollX - this.startX;
+      let rectHeight = e.clientY + window.scrollY - this.startY;
+
+      // constrain the rectangle dimensions within the viewport
+      rectWidth = Math.max(Math.min(rectWidth, window.innerWidth - this.startX), -this.startX);
+      rectHeight = Math.max(Math.min(rectHeight, window.innerHeight - this.startY), -this.startY);
+
+      // update the rectangle's dimension and position
+      this.currentRect.style.width = `${Math.abs(rectWidth)}px`;
+      this.currentRect.style.height = `${Math.abs(rectHeight)}px`;
+      this.currentRect.style.left = `${Math.min(this.startX, this.startX + rectWidth)}px`;
+      this.currentRect.style.top = `${Math.min(this.startY, this.startY + rectHeight)}px`;
+
+      // update the size box content and position
+      this.size.textContent = `${Math.abs(rectWidth)} x ${Math.abs(rectHeight)}`;
+      this.updateSizeBoxPosition(this.currentRect);
+    } else if (this.isResizing && this.resizingRect) {
+      // get current dimensions of the rectangle and assign to temp variables
+      const rect = this.resizingRect.getBoundingClientRect();
+      let newLeft = rect.left;
+      let newTop = rect.top;
+      let newWidth = rect.width;
+      let newHeight = rect.height;
+
+      // update rectangle dimensions based on the resize edge
+      switch (this.resizeEdge) {
+        case 'top-left':
+          newLeft = Math.max(0, e.clientX + window.scrollX);
+          newTop = Math.max(0, e.clientY + window.scrollY);
+          newWidth = Math.max(rect.right - newLeft, this.MIN_SIZE);
+          newHeight = Math.max(rect.bottom - newTop, this.MIN_SIZE);
+          this.setMinSizeStyle(rect, newWidth, newHeight, newLeft, newTop);
+          break;
+
+        case 'top-right':
+          newTop = Math.max(0, e.clientY + window.scrollY);
+          newWidth = Math.max(e.clientX + window.scrollX - rect.left, this.MIN_SIZE);
+          newHeight = Math.max(rect.bottom - newTop, this.MIN_SIZE);
+          this.setMinSizeStyle(rect, newWidth, newHeight, rect.left, newTop);
+          break;
+
+        case 'bottom-right':
+          newWidth = Math.max(e.clientX + window.scrollX - rect.left, this.MIN_SIZE);
+          newHeight = Math.max(e.clientY + window.scrollY - rect.top, this.MIN_SIZE);
+          this.setMinSizeStyle(rect, newWidth, newHeight, rect.left, rect.top);
+          break;
+
+        case 'bottom-left':
+          newLeft = Math.max(0, e.clientX + window.scrollX);
+          newWidth = Math.max(rect.right - newLeft, this.MIN_SIZE);
+          newHeight = Math.max(e.clientY + window.scrollY - rect.top, this.MIN_SIZE);
+          this.setMinSizeStyle(rect, newWidth, newHeight, newLeft, rect.top);
+          break;
+
+        case 'left':
+          newLeft = Math.max(0, e.clientX + window.scrollX);
+          newWidth = Math.max(rect.right - newLeft, this.MIN_SIZE);
+          this.setMinSizeStyle(rect, newWidth, rect.height, newLeft, rect.top);
+          break;
+
+        case 'right':
+          newWidth = Math.max(e.clientX + window.scrollX - rect.left, this.MIN_SIZE);
+          this.setMinSizeStyle(rect, newWidth, rect.height, rect.left, rect.top);
+          break;
+
+        case 'top':
+          newTop = Math.max(0, e.clientY + window.scrollY);
+          newHeight = Math.max(rect.bottom - newTop, this.MIN_SIZE);
+          this.setMinSizeStyle(rect, rect.width, newHeight, rect.left, newTop);
+          break;
+
+        case 'bottom':
+          newHeight = Math.max(e.clientY + window.scrollY - rect.top, this.MIN_SIZE);
+          this.setMinSizeStyle(rect, rect.width, newHeight, rect.left, rect.top);
+          break;
+
+        default:
+          return;
+      }
+
+      // apply new dimensions to the resizing rectangle
+      this.resizingRect.style.width = `${newWidth}px`;
+      this.resizingRect.style.height = `${newHeight}px`;
+
+      // update the size box content and position
+      this.size.textContent = `${newWidth} x ${newHeight}`;
+      this.updateSizeBoxPosition(this.resizingRect);
+    } else if (this.isMoving && this.resizingRect) {
+      let newLeft = e.clientX - this.offsetX;
+      let newTop = e.clientY - this.offsetY;
+
+      // prevent the rectangle from moving outside the viewport
+      newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - this.resizingRect.offsetWidth));
+      newTop = Math.max(0, Math.min(newTop, window.innerHeight - this.resizingRect.offsetHeight));
+
+      // update the rectangle's position
+      this.resizingRect.style.left = `${newLeft}px`;
+      this.resizingRect.style.top = `${newTop}px`;
+    }
+  }
   hidePreviousSizeBox() {
     // hide the previous size box if it exists
     if (this.size) {
